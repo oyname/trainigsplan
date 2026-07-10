@@ -10,7 +10,7 @@
 <style>
   :root{
     --bg:#131518; --surface:#1c1f23; --card:#22262b; --border:#34393f;
-    --text:#eeece7; --text-dim:#8b9096;
+    --text:#ffffff; --text-dim:#aab0b8;
     --power:#ff5a1f; --hyper:#4f9fc0; --stamp:#6fae5b; --rest:#a48bd6;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
@@ -585,10 +585,10 @@
       data: { labels: labels, datasets: datasets },
       options: {
         responsive: true,
-        plugins: { legend: { labels: { color: "#eeece7", font:{size:10} } } },
+        plugins: { legend: { labels: { color: "#ffffff", font:{size:10} } } },
         scales: {
-          x: { ticks: { color: "#8b9096", font:{size:9} }, grid:{ color:"#34393f" } },
-          y: { ticks: { color: "#8b9096", font:{size:9} }, grid:{ color:"#34393f" } }
+          x: { ticks: { color: "#aab0b8", font:{size:9} }, grid:{ color:"#34393f" } },
+          y: { ticks: { color: "#aab0b8", font:{size:9} }, grid:{ color:"#34393f" } }
         }
       }
     });
@@ -629,8 +629,8 @@
         responsive: true,
         plugins: { legend: { display: false } },
         scales: {
-          x: { ticks: { color: "#8b9096", font:{size:9} }, grid:{ display:false } },
-          y: { min:0, max:100, ticks: { color: "#8b9096", font:{size:9} }, grid:{ color:"#34393f" } }
+          x: { ticks: { color: "#aab0b8", font:{size:9} }, grid:{ display:false } },
+          y: { min:0, max:100, ticks: { color: "#aab0b8", font:{size:9} }, grid:{ color:"#34393f" } }
         }
       }
     });

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Trainingsplan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#131518; --surface:#1c1f23; --card:#22262b; --border:#34393f;
+    --text:#eeece7; --text-dim:#8b9096;
+    --power:#ff5a1f; --hyper:#4f9fc0; --stamp:#6fae5b; --rest:#a48bd6;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;}
+  body{padding-bottom:40px;}
+  .wrap{max-width:520px;margin:0 auto;padding:18px 14px 0;}
+  header{padding:6px 2px 14px;}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--text-dim);text-transform:uppercase;}
+  h1{font-family:'Oswald',sans-serif;font-weight:700;font-size:28px;letter-spacing:.01em;text-transform:uppercase;margin:2px 0 0;}
+  .sub{font-size:13px;color:var(--text-dim);margin-top:4px;}
+
+  .gauge{margin-top:14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
+  .gauge-top{display:flex;justify-content:space-between;align-items:baseline;font-family:'JetBrains Mono',monospace;}
+  .gauge-top .pct{font-size:20px;font-weight:700;}
+  .gauge-top .lbl{font-size:11px;color:var(--text-dim);letter-spacing:.08em;text-transform:uppercase;}
+  .gauge-track{position:relative;height:8px;background:#0e1013;border-radius:4px;margin-top:8px;overflow:hidden;border:1px solid var(--border);}
+  .gauge-fill{height:100%;background:linear-gradient(90deg,var(--power),#ffb84f);border-radius:4px;transition:width .35s ease;width:0%;}
+
+  .tabs{display:flex;gap:6px;overflow-x:auto;margin-top:16px;padding-bottom:4px;scrollbar-width:none;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{flex:0 0 auto;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;padding:9px 13px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);white-space:nowrap;cursor:pointer;}
+  .tab.active{color:#0e1013;background:var(--text);border-color:var(--text);}
+  .tab .dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:6px;position:relative;top:-1px;}
+  .dot.power{background:var(--power);} .dot.hyper{background:var(--hyper);} .dot.rest{background:var(--rest);}
+
+  .day{display:none;}
+  .day.active{display:block;}
+  .daytitle{font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:19px;font-weight:600;margin:20px 0 2px;}
+  .daytype{font-size:12px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;letter-spacing:.06em;margin-bottom:14px;}
+
+  .restcard{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px 18px;text-align:center;margin-top:6px;}
+  .restcard .icon{font-size:26px;margin-bottom:8px;}
+  .restcard .txt{font-size:14px;color:var(--text-dim);line-height:1.5;}
+
+  .ex{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 14px 12px;margin-bottom:10px;}
+  .ex-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+  .ex-name{font-size:15px;font-weight:600;}
+  .ex-meta{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);margin-top:3px;display:flex;gap:10px;flex-wrap:wrap;}
+  .rpe{color:var(--power);font-weight:700;}
+
+  .weight-box{display:flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;flex:0 0 auto;}
+  .weight-box input{width:52px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;text-align:center;padding:5px 2px;}
+  .weight-box span{font-size:11px;color:var(--text-dim);}
+
+  .stamps{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;}
+  .stamp{width:34px;height:34px;border-radius:7px;border:1.5px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-dim);cursor:pointer;transition:transform .12s ease;user-select:none;}
+  .stamp.done{background:var(--stamp);border-color:var(--stamp);color:#0e1013;font-weight:700;transform:rotate(-4deg) scale(1.04);}
+  .stamp:active{transform:scale(.9);}
+
+  .footer-btns{display:flex;gap:8px;margin-top:18px;}
+  .btn{flex:1;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.04em;text-transform:uppercase;padding:11px 8px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);text-align:center;cursor:pointer;}
+
+  details{margin-top:20px;border-top:1px solid var(--border);padding-top:12px;}
+  summary{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);cursor:pointer;}
+  .rules{font-size:13px;line-height:1.6;margin-top:10px;color:var(--text-dim);}
+  .rules b{color:var(--text);}
+  .rules .deload{margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);}
+
+  noscript .note{background:#3a2a1a;border:1px solid #6b4a2a;color:#f0dcc0;padding:10px 12px;border-radius:8px;font-size:12px;margin-top:12px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Push / Pull / Legs · Woche</div>
+    <h1>Trainingsplan</h1>
+    <div class="sub">Antippen zum Abhaken · Gewicht direkt bearbeitbar</div>
+  </header>
+
+  <div class="gauge">
+    <div class="gauge-top">
+      <span class="lbl" id="gaugeLabel">Heute</span>
+      <span class="pct" id="gaugePct">0%</span>
+    </div>
+    <div class="gauge-track"><div class="gauge-fill" id="gaugeFill"></div></div>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <div class="tab" data-day="Mo"><span class="dot power"></span>Mo</div>
+    <div class="tab" data-day="Di"><span class="dot power"></span>Di</div>
+    <div class="tab" data-day="Mi"><span class="dot rest"></span>Mi</div>
+    <div class="tab" data-day="Do"><span class="dot hyper"></span>Do</div>
+    <div class="tab" data-day="Fr"><span class="dot hyper"></span>Fr</div>
+    <div class="tab" data-day="Sa"><span class="dot rest"></span>Sa</div>
+    <div class="tab" data-day="So"><span class="dot rest"></span>So</div>
+  </div>
+
+  <!-- MONTAG -->
+  <section class="day" data-day="Mo">
+    <div class="daytitle">Mo – Oberkörper (Power)</div>
+    <div class="daytype">Kraft-Fokus · schwere Grundübungen</div>
+
+    <div class="ex" data-ex="mo1">
+      <div class="ex-head"><div><div class="ex-name">Bankdrücken</div><div class="ex-meta"><span>5 × 5</span><span class="rpe">RPE 8</span><span>⏱ 3 Min</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="27.5"><span>kg</span></div></div>
+      <div class="stamps">
+        <div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div><div class="stamp" data-i="3">4</div><div class="stamp" data-i="4">5</div>
+      </div>
+    </div>
+
+    <div class="ex" data-ex="mo2">
+      <div class="ex-head"><div><div class="ex-name">Klimmzüge / schwerer Latzug</div><div class="ex-meta"><span>4 × 6</span><span class="rpe">RPE 8</span><span>⏱ 2–3 Min</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="30"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div><div class="stamp" data-i="3">4</div></div>
+    </div>
+
+    <div class="ex" data-ex="mo3">
+      <div class="ex-head"><div><div class="ex-name">Schulterdrücken</div><div class="ex-meta"><span>4 × 6</span><span class="rpe">RPE 8</span><span>⏱ 2–3 Min</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="20"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div><div class="stamp" data-i="3">4</div></div>
+    </div>
+
+    <div class="ex" data-ex="mo4">
+      <div class="ex-head"><div><div class="ex-name">Langhantelrudern</div><div class="ex-meta"><span>4 × 6</span><span class="rpe">RPE 8</span><span>⏱ 2–3 Min</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="40"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div><div class="stamp" data-i="3">4</div></div>
+    </div>
+
+    <div class="ex" data-ex="mo5">
+      <div class="ex-head"><div><div class="ex-name">Dips</div><div class="ex-meta"><span>3 × 8</span><span class="rpe">RPE 8</span><span>⏱ 2 Min</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="" placeholder="–"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
+    </div>
+
+    <div class="ex" data-ex="mo6">
+      <div class="ex-head"><div><div class="ex-name">Face Pulls</div><div class="ex-meta"><span>3 × 15</span><span class="rpe">RPE 7</span><span>⏱ 60–90 Sek</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="" placeholder="–"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
+    </div>
+
+    <div class="ex" data-ex="mo7">
+      <div class="ex-head"><div><div class="ex-name">Bauch</div><div class="ex-meta"><span>3 × 15–20</span><span class="rpe">RPE 8</span><span>⏱ 60 Sek</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="" placeholder="–"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
+    </div>
+  </section>
+
+  <!-- DIENSTAG -->
+  <section class="day" data-day="Di">
+    <div class="daytitle">Di – Unterkörper (Power)</div>
+    <div class="daytype">Kraft-Fokus · schwere Grundübungen</div>
+
+    <div class="ex" data-ex="di1">
+      <div class="ex-head"><div><div class="ex-name">Kniebeugen</div><div class="ex-meta"><span>5 × 5</span><span class="rpe">RPE 8</span><span>⏱ 3 Min</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="50"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div><div class="stamp" data-i="3">4</div><div class="stamp" data-i="4">5</div></div>
+    </div>
+
+    <div class="ex" data-ex="di2">
+      <div class="ex-head"><div><div class="ex-name">Rumänisches Kreuzheben</div><div class="ex-meta"><span>4 × 8</span><span class="rpe">RPE 8</span><span>⏱ 2–3 Min</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="50"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div><div class="stamp" data-i="3">4</div></div>
+    </div>
+
+    <div class="ex" data-ex="di3">
+      <div class="ex-head"><div><div class="ex-name">Beinpresse</div><div class="ex-meta"><span>3 × 10</span><span class="rpe">RPE 8</span><span>⏱ 90 Sek</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="200"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
+    </div>
+
+    <div class="ex" data-ex="di4">
+      <div class="ex-head"><div><div class="ex-name">Beinbeuger</div><div class="ex-meta"><span>3 × 12</span><span class="rpe">RPE 8</span><span>⏱ 90 Sek</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="70"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
+    </div>
+
+    <div class="ex" data-ex="di5">
+      <div class="ex-head"><div><div class="ex-name">Wadenheben</div><div class="ex-meta"><span>5 × 12–15</span><span class="rpe">RPE 8</span><span>⏱ 60 Sek</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="100"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div><div class="stamp" data-i="3">4</div><div class="stamp" data-i="4">5</div></div>
+    </div>
+
+    <div class="ex" data-ex="di6">
+      <div class="ex-head"><div><div class="ex-name">Plank</div><div class="ex-meta"><span>3 × 45–60 Sek</span><span class="rpe">—</span><span>⏱ 60 Sek</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="" placeholder="–"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
+    </div>
+  </section>
+
+  <!-- MITTWOCH -->
+  <section class="day" data-day="Mi">
+    <div class="daytitle">Mi – Erholung / Cardio</div>
+    <div class="restcard"><div class="icon">◑</div><div class="txt">Leichte Bewegung, Spaziergang oder lockeres Cardio. Regeneration für den nächsten Trainingstag.</div></div>
+  </section>
+
+  <!-- DONNERSTAG -->
+  <section class="day" data-day="Do">
+    <div class="daytitle">Do – Oberkörper (Hypertrophie)</div>
+    <div class="daytype">Hypertrophie-Fokus · Volumen</div>
+
+    <div class="ex" data-ex="do1">
+      <div class="ex-head"><div><div class="ex-name">Schrägbankdrücken (Kurzhantel)</div><div class="ex-meta"><span>4 × 10</span><span class="rpe">RPE 8</span><span>⏱ 2 Min</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="25"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div><div class="stamp" data-i="3">4</div></div>
+    </div>
+
+    <div class="ex" data-ex="do2">
+      <div class="ex-head"><div><div class="ex-name">Kabelrudern</div><div class="ex-meta"><span>4 × 10</span><span class="rpe">RPE 8</span><span>⏱ 90 Sek</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="40"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div><div class="stamp" data-i="3">4</div></div>
+    </div>
+
+    <div class="ex" data-ex="do3">
+      <div class="ex-head"><div><div class="ex-name">Latzug</div><div class="ex-meta"><span>3 × 12</span><span class="rpe">RPE 8</span><span>⏱ 90 Sek</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="30"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
+    </div>
+
+    <div class="ex" data-ex="do4">
+      <div class="ex-head"><div><div class="ex-name">Seitheben</div><div class="ex-meta"><span>4 × 15</span><span class="rpe">RPE 8</span><span>⏱ 60 Sek</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="" placeholder="–"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div><div class="stamp" data-i="3">4</div></div>
+    </div>
+
+    <div class="ex" data-ex="do5">
+      <div class="ex-head"><div><div class="ex-name">Butterfly</div><div class="ex-meta"><span>3 × 15</span><span class="rpe">RPE 8</span><span>⏱ 60 Sek</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="60"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
+    </div>
+
+    <div class="ex" data-ex="do6">
+      <div class="ex-head"><div><div class="ex-name">Bizepscurls</div><div class="ex-meta"><span>4 × 12</span><span class="rpe">RPE 8</span><span>⏱ 60–90 Sek</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="20"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div><div class="stamp" data-i="3">4</div></div>
+    </div>
+
+    <div class="ex" data-ex="do7">
+      <div class="ex-head"><div><div class="ex-name">Trizeps Rope</div><div class="ex-meta"><span>4 × 12</span><span class="rpe">RPE 8</span><span>⏱ 60–90 Sek</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="15"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div><div class="stamp" data-i="3">4</div></div>
+    </div>
+  </section>
+
+  <!-- FREITAG -->
+  <section class="day" data-day="Fr">
+    <div class="daytitle">Fr – Unterkörper (Hypertrophie)</div>
+    <div class="daytype">Hypertrophie-Fokus · Volumen</div>
+
+    <div class="ex" data-ex="fr1">
+      <div class="ex-head"><div><div class="ex-name">Kreuzheben</div><div class="ex-meta"><span>3 × 5</span><span class="rpe">RPE 7–8</span><span>⏱ 3 Min</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="" placeholder="–"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
+    </div>
+
+    <div class="ex" data-ex="fr2">
+      <div class="ex-head"><div><div class="ex-name">Frontkniebeugen</div><div class="ex-meta"><span>4 × 8</span><span class="rpe">RPE 8</span><span>⏱ 2–3 Min</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="" placeholder="–"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div><div class="stamp" data-i="3">4</div></div>
+    </div>
+
+    <div class="ex" data-ex="fr3">
+      <div class="ex-head"><div><div class="ex-name">Bulgarian Split Squats</div><div class="ex-meta"><span>3 × 10</span><span class="rpe">RPE 8</span><span>⏱ 90 Sek</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="" placeholder="–"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
+    </div>
+
+    <div class="ex" data-ex="fr4">
+      <div class="ex-head"><div><div class="ex-name">Beinstrecker</div><div class="ex-meta"><span>3 × 15</span><span class="rpe">RPE 8</span><span>⏱ 60 Sek</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="" placeholder="–"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
+    </div>
+
+    <div class="ex" data-ex="fr5">
+      <div class="ex-head"><div><div class="ex-name">Beinbeuger</div><div class="ex-meta"><span>3 × 15</span><span class="rpe">RPE 8</span><span>⏱ 60 Sek</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="" placeholder="–"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
+    </div>
+
+    <div class="ex" data-ex="fr6">
+      <div class="ex-head"><div><div class="ex-name">Wadenheben</div><div class="ex-meta"><span>5 × 20</span><span class="rpe">RPE 8</span><span>⏱ 60 Sek</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="" placeholder="–"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div><div class="stamp" data-i="3">4</div><div class="stamp" data-i="4">5</div></div>
+    </div>
+
+    <div class="ex" data-ex="fr7">
+      <div class="ex-head"><div><div class="ex-name">Bauch</div><div class="ex-meta"><span>3 × 15–20</span><span class="rpe">RPE 8</span><span>⏱ 60 Sek</span></div></div>
+      <div class="weight-box"><input type="number" step="0.5" inputmode="decimal" value="" placeholder="–"><span>kg</span></div></div>
+      <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
+    </div>
+  </section>
+
+  <!-- SAMSTAG -->
+  <section class="day" data-day="Sa">
+    <div class="daytitle">Sa – Optional</div>
+    <div class="restcard"><div class="icon">◑</div><div class="txt">30–45 Min Cardio oder Mobility, ganz nach Bedarf.</div></div>
+  </section>
+
+  <!-- SONNTAG -->
+  <section class="day" data-day="So">
+    <div class="daytitle">So – Erholung</div>
+    <div class="restcard"><div class="icon">◑</div><div class="txt">Kompletter Ruhetag. Regeneration vor der neuen Woche.</div></div>
+  </section>
+
+  <div class="footer-btns">
+    <div class="btn" id="resetBtn">Woche zurücksetzen</div>
+  </div>
+
+  <details>
+    <summary>Steigerungsregeln &amp; Deload</summary>
+    <div class="rules">
+      <div><b>Oberkörper-Grundübungen:</b> +2,5 kg, sobald alle Sätze/Wiederholungen erreicht wurden.</div>
+      <div style="margin-top:6px"><b>Unterkörper-Grundübungen:</b> +5 kg, sobald alle Sätze/Wiederholungen erreicht wurden.</div>
+      <div style="margin-top:6px"><b>Isolationsübungen:</b> Erst Wiederholungen steigern, dann Gewicht erhöhen.</div>
+      <div class="deload"><b>Alle 8 Wochen (Deload):</b> Gewicht um 15–20 % reduzieren, Trainingsvolumen auf ca. 60 % senken.</div>
+    </div>
+  </details>
+
+  <noscript>
+    <div class="note">Hinweis: JavaScript ist deaktiviert. Der Plan ist trotzdem vollständig lesbar, aber Abhaken und Speichern funktionieren erst mit aktiviertem JavaScript.</div>
+  </noscript>
+</div>
+
+<script>
+(function(){
+  var STORE_KEY = "trainingsplan-v1";
+  var state = { completed:{}, weights:{} };
+
+  function loadState(){
+    try{
+      var raw = localStorage.getItem(STORE_KEY);
+      if(raw) state = JSON.parse(raw);
+    }catch(e){ /* localStorage evtl. nicht verfügbar */ }
+  }
+  function saveState(){
+    try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+    catch(e){ /* Speichern nicht möglich in dieser Umgebung */ }
+  }
+
+  function todayKey(){
+    var map = ["So","Mo","Di","Mi","Do","Fr","Sa"];
+    return map[new Date().getDay()];
+  }
+
+  function showDay(day){
+    document.querySelectorAll(".day").forEach(function(s){
+      s.classList.toggle("active", s.dataset.day === day);
+    });
+    document.querySelectorAll(".tab").forEach(function(t){
+      t.classList.toggle("active", t.dataset.day === day);
+    });
+    updateGauge(day);
+  }
+
+  function updateGauge(day){
+    var section = document.querySelector('.day[data-day="' + day + '"]');
+    var titleEl = section.querySelector(".daytitle");
+    var label = titleEl ? titleEl.textContent : day;
+    document.getElementById("gaugeLabel").textContent = label;
+    var stamps = section.querySelectorAll(".stamp");
+    var pct = 100;
+    if(stamps.length){
+      var done = section.querySelectorAll(".stamp.done").length;
+      pct = Math.round((done / stamps.length) * 100);
+    }
+    document.getElementById("gaugePct").textContent = pct + "%";
+    document.getElementById("gaugeFill").style.width = pct + "%";
+  }
+
+  function applyStoredState(){
+    document.querySelectorAll(".ex").forEach(function(ex){
+      var exId = ex.dataset.ex;
+      var input = ex.querySelector(".weight-box input");
+      if(state.weights[exId] !== undefined && state.weights[exId] !== null){
+        input.value = state.weights[exId];
+      }
+      ex.querySelectorAll(".stamp").forEach(function(st){
+        var i = st.dataset.i;
+        if(state.completed[exId] && state.completed[exId][i]){
+          st.classList.add("done");
+          st.textContent = "✓";
+        }
+      });
+    });
+  }
+
+  function bindEvents(){
+    document.querySelectorAll(".tab").forEach(function(tab){
+      tab.addEventListener("click", function(){ showDay(tab.dataset.day); });
+    });
+
+    document.querySelectorAll(".ex").forEach(function(ex){
+      var exId = ex.dataset.ex;
+      var input = ex.querySelector(".weight-box input");
+      input.addEventListener("change", function(){
+        state.weights[exId] = input.value === "" ? null : parseFloat(input.value);
+        saveState();
+      });
+      ex.querySelectorAll(".stamp").forEach(function(st){
+        st.addEventListener("click", function(){
+          var i = st.dataset.i;
+          if(!state.completed[exId]) state.completed[exId] = {};
+          var nowDone = !state.completed[exId][i];
+          state.completed[exId][i] = nowDone;
+          st.classList.toggle("done", nowDone);
+          st.textContent = nowDone ? "✓" : (parseInt(i,10) + 1);
+          saveState();
+          var activeDay = document.querySelector(".day.active");
+          if(activeDay) updateGauge(activeDay.dataset.day);
+        });
+      });
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function(){
+      state.completed = {};
+      saveState();
+      document.querySelectorAll(".stamp").forEach(function(st){
+        st.classList.remove("done");
+        st.textContent = parseInt(st.dataset.i,10) + 1;
+      });
+      var activeDay = document.querySelector(".day.active");
+      if(activeDay) updateGauge(activeDay.dataset.day);
+    });
+  }
+
+  loadState();
+  applyStoredState();
+  bindEvents();
+  showDay(todayKey());
+})();
+</script>
+</body>
+</html>

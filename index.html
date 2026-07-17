@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-
 <html lang="de">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" name="viewport"/>
 <title>Trainingsplan</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.umd.min.js"></script>
 <style>
   :root{
@@ -41,10 +40,7 @@
   .day.active{display:block;}
   .daytitle{font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:19px;font-weight:600;margin:20px 0 2px;}
   .daytype{font-size:12px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;letter-spacing:.06em;margin-bottom:14px;}
-
-  .restcard{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px 18px;text-align:center;margin-top:6px;}
-  .restcard .icon{font-size:26px;margin-bottom:8px;}
-  .restcard .txt{font-size:14px;color:var(--text-dim);line-height:1.5;}
+  .daynote{font-size:12px;color:var(--hyper);font-family:'JetBrains Mono',monospace;background:rgba(79,159,192,0.08);border:1px solid rgba(79,159,192,0.3);border-radius:8px;padding:8px 10px;margin-bottom:14px;line-height:1.5;}
 
   .ex{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 14px 12px;margin-bottom:10px;}
   .ex-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
@@ -54,7 +50,7 @@
 
   .weight-box{display:flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;flex:0 0 auto;}
   .weight-box input{width:52px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;text-align:center;padding:5px 2px;}
-  .weight-box span{font-size:11px;color:var(--text-dim);}
+  .weight-box span{font-size:10.5px;color:var(--text-dim);white-space:nowrap;}
 
   .stamps{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;}
   .stamp{width:34px;height:34px;border-radius:7px;border:1.5px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--text);cursor:pointer;transition:transform .12s ease;user-select:none;}
@@ -79,6 +75,7 @@
   .stat-card .lbl{font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.04em;margin-top:2px;}
 
   .chart-block{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px;margin-top:10px;}
+  .chart-block canvas{height:160px !important;}
   .chart-title{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;font-family:'JetBrains Mono',monospace;}
   .chart-empty{font-size:12.5px;color:var(--text-dim);padding:16px 4px;text-align:center;}
   canvas{max-width:100%;}
@@ -86,14 +83,16 @@
   .complete-btn{margin-top:12px;width:100%;background:var(--power);color:#0e1013;border:none;border-radius:8px;padding:11px;font-weight:700;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;}
   .complete-btn:active{opacity:.85;}
   .complete-msg{font-size:11.5px;color:#6fae5b;text-align:center;margin-top:8px;font-family:'JetBrains Mono',monospace;display:none;}
+
+  .export-note{font-size:11px;color:var(--text-dim);text-align:center;margin-top:10px;font-family:'JetBrains Mono',monospace;}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
-<div class="eyebrow">4-Tage Powerbuilding · 60-Minuten-Plan</div>
+<div class="eyebrow">4-Tage Powerbuilding · 60–75-Minuten-Plan · v3</div>
 <h1>Trainingsplan</h1>
-<div class="sub">Antippen zum Abhaken · inklusive Military Burpees</div>
+<div class="sub">Antippen zum Abhaken · Gewichte in kg/Seite</div>
 </header>
 <div class="gauge">
 <div class="gauge-top">
@@ -126,179 +125,165 @@
 <div class="tab" data-day="3"><span class="dot hyper"></span>Tag 3</div>
 <div class="tab" data-day="4"><span class="dot hyper"></span>Tag 4</div>
 </div>
-<!-- MONTAG -->
+
+<!-- TAG 1 -->
 <section class="day" data-day="1">
 <div class="daytitle">Tag 1 – Oberkörper (Power)</div>
-<div class="daytype">Kraft-Fokus · schwere Grundübungen · Zielzeit ca. 60 Min</div>
-
-
-
-
-
-
+<div class="daytype">Kraft-Fokus · schwere Grundübungen · Zielzeit 60, max. 75 Min</div>
+<div class="daynote">Zeitbudget: ~55–60 Min reine Übungszeit + Umbauten. Burpees sind fest eingeplant, kein Streichkandidat.</div>
 
 <div class="ex" data-ex="1_1">
 <div class="ex-head"><div><div class="ex-name">Bankdrücken</div><div class="ex-meta"><span>5 × 5</span><span class="rpe">RPE 8</span><span>⏱ 2,5–3 Min</span></div></div>
-<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="27.5"/><span>kg</span></div></div>
+<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="27.5"/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div><div class="stamp" data-i="3">4</div><div class="stamp" data-i="4">5</div></div>
 </div><div class="ex" data-ex="1_2">
 <div class="ex-head"><div><div class="ex-name">Klimmzüge / schwerer Latzug</div><div class="ex-meta"><span>4 × 6</span><span class="rpe">RPE 8</span><span>⏱ 2 Min</span></div></div>
-<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="30"/><span>kg</span></div></div>
+<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="30"/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div><div class="stamp" data-i="3">4</div></div>
 </div><div class="ex" data-ex="1_3">
 <div class="ex-head"><div><div class="ex-name">Schulterdrücken</div><div class="ex-meta"><span>3 × 6</span><span class="rpe">RPE 8</span><span>⏱ 2 Min</span></div></div>
-<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="20"/><span>kg</span></div></div>
+<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="20"/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
 </div><div class="ex" data-ex="1_4">
 <div class="ex-head"><div><div class="ex-name">Langhantelrudern</div><div class="ex-meta"><span>3 × 6</span><span class="rpe">RPE 8</span><span>⏱ 2 Min</span></div></div>
-<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="40"/><span>kg</span></div></div>
+<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="40"/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
 </div><div class="ex" data-ex="1_5">
 <div class="ex-head"><div><div class="ex-name">Face Pulls</div><div class="ex-meta"><span>2 × 15</span><span class="rpe">RPE 7</span><span>⏱ 60 Sek</span></div></div>
-<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg</span></div></div>
+<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div></div>
 </div><div class="ex" data-ex="1_6">
 <div class="ex-head"><div><div class="ex-name">Military Burpees</div><div class="ex-meta"><span>3 × 8–10</span><span class="rpe">RPE 7–8</span><span>⏱ 60 Sek</span></div></div>
-<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg</span></div></div>
+<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
 </div><button class="complete-btn" data-complete="1">Training abschließen</button>
 <div class="complete-msg" id="msg-1">Protokolliert ✓</div>
 </section>
-<!-- DIENSTAG -->
+
+<!-- TAG 2 -->
 <section class="day" data-day="2">
 <div class="daytitle">Tag 2 – Unterkörper (Power)</div>
-<div class="daytype">Kraft-Fokus · schwere Grundübungen · Zielzeit ca. 60 Min</div>
-
-
-
-
-
+<div class="daytype">Kraft-Fokus · schwere Grundübungen · Zielzeit 60, max. 75 Min</div>
+<div class="daynote">Zeitbudget: ~55–62 Min reine Übungszeit + Umbauten. Burpees sind fest eingeplant, kein Streichkandidat.</div>
 
 <div class="ex" data-ex="2_1">
 <div class="ex-head"><div><div class="ex-name">Kniebeugen</div><div class="ex-meta"><span>5 × 5</span><span class="rpe">RPE 8</span><span>⏱ 3 Min</span></div></div>
-<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="50"/><span>kg</span></div></div>
+<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="50"/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div><div class="stamp" data-i="3">4</div><div class="stamp" data-i="4">5</div></div>
 </div><div class="ex" data-ex="2_2">
 <div class="ex-head"><div><div class="ex-name">Rumänisches Kreuzheben</div><div class="ex-meta"><span>3 × 8</span><span class="rpe">RPE 8</span><span>⏱ 2–3 Min</span></div></div>
-<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="50"/><span>kg</span></div></div>
+<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="50"/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
 </div><div class="ex" data-ex="2_3">
 <div class="ex-head"><div><div class="ex-name">Beinpresse</div><div class="ex-meta"><span>3 × 10</span><span class="rpe">RPE 8</span><span>⏱ 90 Sek</span></div></div>
-<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="200"/><span>kg</span></div></div>
+<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="200"/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
 </div><div class="ex" data-ex="2_4">
 <div class="ex-head"><div><div class="ex-name">Beinbeuger</div><div class="ex-meta"><span>2 × 12</span><span class="rpe">RPE 8</span><span>⏱ 60 Sek</span></div></div>
-<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="70"/><span>kg</span></div></div>
+<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="70"/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div></div>
 </div><div class="ex" data-ex="2_5">
 <div class="ex-head"><div><div class="ex-name">Plank</div><div class="ex-meta"><span>2 × 60 Sek</span><span class="rpe">RPE —</span><span>⏱ 60 Sek</span></div></div>
-<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg</span></div></div>
+<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div></div>
 </div><div class="ex" data-ex="2_6">
 <div class="ex-head"><div><div class="ex-name">Military Burpees</div><div class="ex-meta"><span>3 × 6–8</span><span class="rpe">RPE 7</span><span>⏱ 60–90 Sek</span></div></div>
-<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg</span></div></div>
+<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
 </div><button class="complete-btn" data-complete="2">Training abschließen</button>
 <div class="complete-msg" id="msg-2">Protokolliert ✓</div>
 </section>
-<!-- DONNERSTAG -->
+
+<!-- TAG 3 -->
 <section class="day" data-day="3">
 <div class="daytitle">Tag 3 – Oberkörper (Hypertrophie)</div>
-<div class="daytype">Hypertrophie-Fokus · Volumen · Zielzeit ca. 60 Min</div>
-
-
-
-
-
-
+<div class="daytype">Hypertrophie-Fokus · Volumen · Zielzeit 60, max. 75 Min</div>
+<div class="daynote">Zeitbudget: ~50–56 Min reine Übungszeit + Umbauten. Burpees sind fest eingeplant, kein Streichkandidat.</div>
 
 <div class="ex" data-ex="3_1">
 <div class="ex-head"><div><div class="ex-name">Schrägbankdrücken (Kurzhantel)</div><div class="ex-meta"><span>4 × 10</span><span class="rpe">RPE 8</span><span>⏱ 2 Min</span></div></div>
-<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="25"/><span>kg</span></div></div>
+<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="25"/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div><div class="stamp" data-i="3">4</div></div>
 </div><div class="ex" data-ex="3_2">
 <div class="ex-head"><div><div class="ex-name">Kabelrudern</div><div class="ex-meta"><span>4 × 10</span><span class="rpe">RPE 8</span><span>⏱ 90 Sek</span></div></div>
-<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="40"/><span>kg</span></div></div>
+<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="40"/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div><div class="stamp" data-i="3">4</div></div>
 </div><div class="ex" data-ex="3_3">
 <div class="ex-head"><div><div class="ex-name">Latzug</div><div class="ex-meta"><span>3 × 12</span><span class="rpe">RPE 8</span><span>⏱ 90 Sek</span></div></div>
-<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="30"/><span>kg</span></div></div>
+<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="30"/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
 </div><div class="ex" data-ex="3_4">
 <div class="ex-head"><div><div class="ex-name">Seitheben</div><div class="ex-meta"><span>3 × 15</span><span class="rpe">RPE 8</span><span>⏱ 60 Sek</span></div></div>
-<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg</span></div></div>
+<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
 </div><div class="ex" data-ex="3_5">
 <div class="ex-head"><div><div class="ex-name">Bizepscurls</div><div class="ex-meta"><span>2 × 12</span><span class="rpe">RPE 8</span><span>⏱ 60 Sek</span></div></div>
-<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="20"/><span>kg</span></div></div>
+<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="20"/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div></div>
 </div><div class="ex" data-ex="3_6">
 <div class="ex-head"><div><div class="ex-name">Trizeps Rope</div><div class="ex-meta"><span>2 × 12</span><span class="rpe">RPE 8</span><span>⏱ 60 Sek</span></div></div>
-<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="15"/><span>kg</span></div></div>
+<div class="weight-box"><input inputmode="decimal" step="0.5" type="number" value="15"/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div></div>
 </div><div class="ex" data-ex="3_7">
+<div class="ex-head"><div><div class="ex-name">Bauch</div><div class="ex-meta"><span>2 × 15–20</span><span class="rpe">RPE 8</span><span>⏱ 60 Sek</span></div></div>
+<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg/Seite</span></div></div>
+<div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div></div>
+</div><div class="ex" data-ex="3_8">
 <div class="ex-head"><div><div class="ex-name">Military Burpees</div><div class="ex-meta"><span>3 × 10</span><span class="rpe">RPE 7–8</span><span>⏱ 60 Sek</span></div></div>
-<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg</span></div></div>
+<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
 </div><button class="complete-btn" data-complete="3">Training abschließen</button>
 <div class="complete-msg" id="msg-3">Protokolliert ✓</div>
 </section>
-<!-- FREITAG -->
+
+<!-- TAG 4 -->
 <section class="day" data-day="4">
 <div class="daytitle">Tag 4 – Unterkörper (Hypertrophie)</div>
-<div class="daytype">Hypertrophie-Fokus · Volumen · Zielzeit ca. 60 Min</div>
-
-
-
-
-
-
+<div class="daytype">Hypertrophie-Fokus · Volumen · Zielzeit 60, max. 75 Min</div>
+<div class="daynote">Straff auf 6 Übungen gekürzt. Kreuzheben zuerst (frisch), RPE reduziert, da Tag 2 nur 3 Tage zurückliegt. Beinstrecker &amp; Bauch gestrichen (Redundanz bzw. besser als Finisher an Tag 1/3 aufgehoben). Zeitbudget: ~50–55 Min + Umbauten.</div>
 
 <div class="ex" data-ex="4_1">
-<div class="ex-head"><div><div class="ex-name">Kreuzheben</div><div class="ex-meta"><span>3 × 5</span><span class="rpe">RPE 7–8</span><span>⏱ 3 Min</span></div></div>
-<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg</span></div></div>
+<div class="ex-head"><div><div class="ex-name">Kreuzheben</div><div class="ex-meta"><span>3 × 5</span><span class="rpe">RPE 7</span><span>⏱ 3 Min</span></div></div>
+<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
 </div><div class="ex" data-ex="4_2">
-<div class="ex-head"><div><div class="ex-name">Frontkniebeugen</div><div class="ex-meta"><span>3 × 8</span><span class="rpe">RPE 8</span><span>⏱ 2–3 Min</span></div></div>
-<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg</span></div></div>
+<div class="ex-head"><div><div class="ex-name">Beinpresse</div><div class="ex-meta"><span>3 × 10</span><span class="rpe">RPE 7–8</span><span>⏱ 90 Sek</span></div></div>
+<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
 </div><div class="ex" data-ex="4_3">
-<div class="ex-head"><div><div class="ex-name">Bulgarian Split Squats</div><div class="ex-meta"><span>2 × 10</span><span class="rpe">RPE 8</span><span>⏱ 90 Sek</span></div></div>
-<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg</span></div></div>
+<div class="ex-head"><div><div class="ex-name">Bulgarian Split Squats</div><div class="ex-meta"><span>2 × 10</span><span class="rpe">RPE 7</span><span>⏱ 90 Sek</span></div></div>
+<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div></div>
 </div><div class="ex" data-ex="4_4">
-<div class="ex-head"><div><div class="ex-name">Beinstrecker</div><div class="ex-meta"><span>2 × 15</span><span class="rpe">RPE 8</span><span>⏱ 60 Sek</span></div></div>
-<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg</span></div></div>
+<div class="ex-head"><div><div class="ex-name">Beinbeuger</div><div class="ex-meta"><span>2 × 12</span><span class="rpe">RPE 8</span><span>⏱ 60 Sek</span></div></div>
+<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div></div>
 </div><div class="ex" data-ex="4_5">
-<div class="ex-head"><div><div class="ex-name">Beinbeuger</div><div class="ex-meta"><span>2 × 15</span><span class="rpe">RPE 8</span><span>⏱ 60 Sek</span></div></div>
-<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg</span></div></div>
+<div class="ex-head"><div><div class="ex-name">Wadenheben</div><div class="ex-meta"><span>2 × 15</span><span class="rpe">RPE 8</span><span>⏱ 60 Sek</span></div></div>
+<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div></div>
 </div><div class="ex" data-ex="4_6">
-<div class="ex-head"><div><div class="ex-name">Wadenheben</div><div class="ex-meta"><span>3 × 20</span><span class="rpe">RPE 8</span><span>⏱ 60 Sek</span></div></div>
-<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg</span></div></div>
-<div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
-</div><div class="ex" data-ex="4_7">
-<div class="ex-head"><div><div class="ex-name">Bauch</div><div class="ex-meta"><span>2 × 15–20</span><span class="rpe">RPE 8</span><span>⏱ 60 Sek</span></div></div>
-<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg</span></div></div>
-<div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div></div>
-</div><div class="ex" data-ex="4_8">
 <div class="ex-head"><div><div class="ex-name">Military Burpees</div><div class="ex-meta"><span>3 × 8–10</span><span class="rpe">RPE 7</span><span>⏱ 60–90 Sek</span></div></div>
-<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg</span></div></div>
+<div class="weight-box"><input inputmode="decimal" placeholder="–" step="0.5" type="number" value=""/><span>kg/Seite</span></div></div>
 <div class="stamps"><div class="stamp" data-i="0">1</div><div class="stamp" data-i="1">2</div><div class="stamp" data-i="2">3</div></div>
 </div><button class="complete-btn" data-complete="4">Training abschließen</button>
 <div class="complete-msg" id="msg-4">Protokolliert ✓</div>
 </section>
+
 <div class="footer-btns">
 <div class="btn" id="resetBtn">Häkchen zurücksetzen</div>
+<div class="btn" id="exportBtn">Daten exportieren</div>
 <div class="btn" id="resetAllBtn" style="color:#ff5a1f;border-color:#ff5a1f;">Alle Daten löschen</div>
 </div>
+<div class="export-note">Export speichert Verlauf &amp; Gewichte als JSON-Datei</div>
+
 <details>
 <summary>Steigerungsregeln &amp; Deload</summary>
-<div class="rules"><div style="margin-top:6px"><b>Zeitlimit:</b> Nach 60 Minuten Training beenden. Military Burpees entfallen zuerst, falls die Grundübungen länger dauern.</div>
-<div><b>Oberkörper-Grundübungen:</b> +2,5 kg, sobald alle Sätze/Wiederholungen erreicht wurden.</div>
-<div style="margin-top:6px"><b>Unterkörper-Grundübungen:</b> +5 kg, sobald alle Sätze/Wiederholungen erreicht wurden.</div>
+<div class="rules"><div style="margin-top:6px"><b>Zeitlimit:</b> Ziel 60 Minuten, bis max. 75 Minuten in Ordnung. Burpees sind an jedem Tag fester Bestandteil und werden nicht gestrichen – bei Zeitdruck lieber Pausen bei den Isolationsübungen leicht kürzen.</div>
+<div><b>Oberkörper-Grundübungen:</b> +2,5 kg/Seite, sobald alle Sätze/Wiederholungen erreicht wurden.</div>
+<div style="margin-top:6px"><b>Unterkörper-Grundübungen:</b> +5 kg/Seite, sobald alle Sätze/Wiederholungen erreicht wurden.</div>
 <div style="margin-top:6px"><b>Isolationsübungen:</b> Erst Wiederholungen steigern, dann Gewicht erhöhen.</div>
+<div style="margin-top:6px"><b>Tag 4:</b> RPE bewusst niedriger (7 statt 8) angesetzt, da Tag 2 nur 3 Tage zurückliegt. Erst nach 3–4 Wochen ohne spürbare Resterschöpfung auf RPE 8 hochziehen.</div>
 <div class="deload"><b>Alle 8 Wochen (Deload):</b> Gewicht um 15–20 % reduzieren, Trainingsvolumen auf ca. 60 % senken.</div>
 </div>
 </details>
@@ -308,8 +293,8 @@
 </div>
 <script>
 (function(){
-  var STORE_KEY = "trainingsplan-v2";
-  var LOG_KEY = "trainingsplan-log-v2";
+  var STORE_KEY = "trainingsplan-v3";
+  var LOG_KEY = "trainingsplan-log-v3";
   var state = { completed:{}, weights:{} };
   var log = [];
 
@@ -325,22 +310,22 @@
     try{
       var raw = localStorage.getItem(STORE_KEY);
       if(raw) state = JSON.parse(raw);
-    }catch(e){ /* localStorage evtl. nicht verfügbar */ }
+    }catch(e){ /* trainingsplan_v3.html: localStorage evtl. nicht verfügbar */ }
     try{
       var rawLog = localStorage.getItem(LOG_KEY);
       if(rawLog) log = JSON.parse(rawLog);
-    }catch(e){ /* localStorage evtl. nicht verfügbar */ }
+    }catch(e){ /* trainingsplan_v3.html: localStorage evtl. nicht verfügbar */ }
   }
   function saveState(){
     try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
-    catch(e){ /* Speichern nicht möglich in dieser Umgebung */ }
+    catch(e){ console.error("trainingsplan_v3.html: Speichern (state) fehlgeschlagen", e); }
   }
   function saveLog(){
     try{ localStorage.setItem(LOG_KEY, JSON.stringify(log)); }
-    catch(e){ /* Speichern nicht möglich in dieser Umgebung */ }
+    catch(e){ console.error("trainingsplan_v3.html: Speichern (log) fehlgeschlagen", e); }
   }
 
-  var NEXT_KEY = "trainingsplan-nextday-v2";
+  var NEXT_KEY = "trainingsplan-nextday-v3";
 
   function getNextDay(){
     try{
@@ -447,16 +432,23 @@
     var section = document.querySelector('.day[data-day="' + day + '"]');
     var exercises = section.querySelectorAll(".ex");
     var totalStamps = 0, doneStamps = 0;
-    var weights = {};
     exercises.forEach(function(ex){
-      var exId = ex.dataset.ex;
-      var input = ex.querySelector(".weight-box input");
-      if(input.value !== "") weights[exId] = parseFloat(input.value);
       var stamps = ex.querySelectorAll(".stamp");
       totalStamps += stamps.length;
       stamps.forEach(function(st){ if(st.classList.contains("done")) doneStamps++; });
     });
     var completion = totalStamps ? Math.round((doneStamps/totalStamps)*100) : 0;
+
+    var ok = confirm("Training Tag " + day + " abschließen (" + completion + "% erledigt)? Die Häkchen werden danach zurückgesetzt und im Verlauf protokolliert.");
+    if(!ok) return;
+
+    var weights = {};
+    exercises.forEach(function(ex){
+      var exId = ex.dataset.ex;
+      var input = ex.querySelector(".weight-box input");
+      if(input.value !== "") weights[exId] = parseFloat(input.value);
+    });
+
     log.push({ date: new Date().toISOString(), day: day, completion: completion, weights: weights });
     saveLog();
 
@@ -490,11 +482,33 @@
     var btn = document.getElementById("resetAllBtn");
     if(!btn) return;
     btn.addEventListener("click", function(){
-      var ok = confirm("Wirklich ALLE Daten löschen? Das setzt Gewichte, Häkchen und die komplette Dashboard-Historie unwiderruflich zurück.");
+      var ok = confirm("Wirklich ALLE Daten löschen? Das setzt Gewichte, Häkchen und die komplette Dashboard-Historie unwiderruflich zurück. Vorher exportieren nicht vergessen.");
       if(!ok) return;
       try{ localStorage.removeItem(STORE_KEY); }catch(e){}
       try{ localStorage.removeItem(LOG_KEY); }catch(e){}
       location.reload();
+    });
+  }
+
+  function bindExport(){
+    var btn = document.getElementById("exportBtn");
+    if(!btn) return;
+    btn.addEventListener("click", function(){
+      try{
+        var payload = { exportedAt: new Date().toISOString(), state: state, log: log };
+        var blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "trainingsplan-export-" + new Date().toISOString().slice(0,10) + ".json";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }catch(e){
+        console.error("trainingsplan_v3.html: Export fehlgeschlagen", e);
+        alert("Export fehlgeschlagen. Siehe Konsole für Details.");
+      }
     });
   }
 
@@ -546,6 +560,7 @@
       data: { labels: labels, datasets: datasets },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: { legend: { labels: { color: "#ffffff", font:{size:10} } } },
         scales: {
           x: { ticks: { color: "#aab0b8", font:{size:9} }, grid:{ color:"#34393f" } },
@@ -588,6 +603,7 @@
       data: { labels: labels, datasets: [{ label: "Abschlussquote %", data: data, backgroundColor: "#ff5a1f" }] },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
           x: { ticks: { color: "#aab0b8", font:{size:9} }, grid:{ display:false } },
@@ -608,6 +624,7 @@
   bindEvents();
   bindCompleteButtons();
   bindResetAll();
+  bindExport();
   showDay(getNextDay());
   renderDashboard();
 })();
